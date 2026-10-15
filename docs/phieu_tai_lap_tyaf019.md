@@ -4,8 +4,8 @@
 ---
 
 ### THÔNG TIN BÀI BÁO GỐC (TARGET PAPER)
-- **Tiêu đề gốc:** *Designing incident reporting systems in cybersecurity*
-- **Tác giả:** Tobias A. Schaltegger, Benjamin Ambuehl, Melanie Knieps, Alain Mermoud, David Basin, Vincent Lenders
+- **Tiêu đề gốc:** *Learning from safety science: designing incident reporting systems in cybersecurity*
+- **Tác giả:** Nico Ebert (Tác giả chính - ZHAW), Thierry Schaltegger, Benjamin Ambuehl, Tim Geppert, Ariane Trammell, Melanie Knieps, Verena Zimmermann
 - **Tạp chí / Xuất bản:** *Journal of Cybersecurity*, Volume 11, Issue 1, 2025, tyaf019 (Oxford University Press)
 - **DOI:** [`10.1093/cybsec/tyaf019`](https://doi.org/10.1093/cybsec/tyaf019)
 - **Lĩnh vực giao thoa:** An toàn thông tin (Cybersecurity), Khoa học An toàn (Safety Science), Tương tác Người - Máy (HCI) và Quản trị Rủi ro Tổ chức.
@@ -39,12 +39,14 @@ graph TD
     A["Tìm kiếm tài liệu ban đầu<br/>(PubMed, Scopus, Web of Science, IEEE Xplore, ACM)<br/>N = 2,053"] --> B["Loại bỏ tài liệu trùng lặp<br/>N = 142 bài bị loại"]
     B --> C["Tài liệu duy nhất đưa vào sàng lọc<br/>N = 1,911"]
     C --> D["Sàng lọc Tiêu đề & Tóm tắt (Title & Abstract Screening)<br/>N = 1,862 bài bị loại do không phù hợp"]
-    D --> E["Toàn văn được đánh giá tính phù hợp (Full-text Assessment)<br/>N = 49 bài"]
-    E --> F["Loại trừ sau đánh giá toàn văn<br/>N = 12 bài (không mô tả IRS, thiếu cấu trúc rõ ràng)"]
-    F --> G["Tập dữ liệu phân tích cuối cùng (Synthesized Corpus)<br/>N = 37 bài báo toàn văn"]
-    G --> H["Lĩnh vực Y tế (Healthcare Safety): 33 bài (89.2%)"]
-    G --> I["Lĩnh vực Hàng không (Aviation Safety): 4 bài (10.8%)"]
-    G --> J["Phân tích chủ đề (Thematic Analysis)<br/>Xác định 14 Design Themes (Table 2 & Table A2)"]
+    D --> E["Đánh giá toàn văn từ cơ sở dữ liệu (Full-text Assessment)<br/>N = 49 bài"]
+    E --> F["Loại trừ sau đánh giá toàn văn<br/>N = 24 bài (không đáp ứng tiêu chí IRS)"]
+    E --> G["Bài từ cơ sở dữ liệu được chọn<br/>N = 25 bài"]
+    H["Tìm kiếm bổ sung qua Google Scholar Snowballing<br/>N = 12 bài"] --> I["Tập dữ liệu phân tích cuối cùng (Synthesized Corpus)<br/>N = 37 bài (25 từ DB + 12 từ Snowballing)"]
+    G --> I
+    I --> J["Lĩnh vực Y tế (Healthcare Safety): 33 bài (89.2%)"]
+    I --> K["Lĩnh vực Hàng không (Aviation Safety): 4 bài (10.8%)"]
+    I --> L["Phân tích chủ đề (Thematic Analysis)<br/>Xác định 14 Design Themes (Table 2 & Table A2)"]
 ```
 
 ---
@@ -78,13 +80,13 @@ Bài báo đề xuất cấu trúc phân loại chuẩn hóa gồm 5 nhóm thự
 
 #### 3.4. 14 Chủ đề Thiết kế Hệ thống Báo cáo Sự cố (Table 2 & Table A2)
 Qua tổng hợp 37 bài báo, tác giả đúc kết 14 chủ đề thiết kế cốt lõi:
-1. **Case-focused / Case-based learning (19/37 bài):** Tập trung vào việc học hỏi từ từng vụ việc cụ thể thay vì chỉ đếm số liệu cơ học.
-2. **Competence (27/37 bài):** Đào tạo kỹ năng và kiến thức nhận diện sự cố cho cả người báo cáo và chuyên viên phân tích.
-3. **Confidentiality (13/37 bài):** Bảo vệ danh tính người báo cáo và thông tin nhạy cảm của tổ chức.
-4. **Ease of use (15/37 bài):** Giao diện thân thiện, biểu mẫu tinh gọn, dễ tiếp cận cho người dùng không chuyên.
-5. **Feedback (18/37 bài):** Cung cấp phản hồi kịp thời cho người báo cáo về kết quả điều tra và bài học rút ra.
-6. **Impunity (28/37 bài):** Chính sách "Không trừng phạt" (Just Culture / Non-punitive), bảo vệ người báo cáo trung thực khỏi bị kỷ luật.
-7. **Independence (6/37 bài):** Hệ thống và ban tiếp nhận báo cáo độc lập với bộ phận quản lý trực tiếp và cơ quan thanh tra kỷ luật.
+1. **Case-focused / Case-based learning (6/37 bài):** Tập trung vào việc học hỏi từ từng vụ việc cụ thể thay vì chỉ đếm số liệu cơ học (gồm 6 bài: [22], [83], [23], [81], [177], [26]).
+2. **Competence (13/37 bài):** Đào tạo kỹ năng và kiến thức nhận diện sự cố cho cả người báo cáo và chuyên viên phân tích.
+3. **Confidentiality (18/37 bài):** Bảo vệ danh tính người báo cáo và thông tin nhạy cảm của tổ chức.
+4. **Ease of use (18/37 bài):** Giao diện thân thiện, biểu mẫu tinh gọn, dễ tiếp cận cho người dùng không chuyên.
+5. **Feedback (24/37 bài):** Cung cấp phản hồi kịp thời cho người báo cáo về kết quả điều tra và bài học rút ra.
+6. **Impunity (19/37 bài):** Chính sách "Không trừng phạt" (Just Culture / Non-punitive), bảo vệ người báo cáo trung thực khỏi bị kỷ luật.
+7. **Independence (16/37 bài):** Hệ thống và ban tiếp nhận báo cáo độc lập với bộ phận quản lý trực tiếp và cơ quan thanh tra kỷ luật.
 8. **Integration (12/37 bài):** Tích hợp trơn tru với các công cụ giám sát (SIEM, EDR) và quy trình vận hành sẵn có.
 9. **Management support (18/37 bài):** Cam kết của lãnh đạo cấp cao trong việc cấp phát nguồn lực và xây dựng văn hóa an toàn.
 10. **Shared ownership & accountability (9/37 bài):** Trách nhiệm bảo đảm an ninh mạng thuộc về toàn thể tổ chức, không riêng phòng IT.
@@ -101,13 +103,13 @@ Nhóm nghiên cứu đã trích xuất tự động và đối chiếu chuẩn x
 
 | # | Design Theme (Chủ đề thiết kế) | Số bài xuất hiện (Calculated) | Target Table A2 trong bài báo | Trạng thái kiểm chứng |
 |---|--------------------------------|-------------------------------|-------------------------------|-----------------------|
-| 1 | **Case-focused** | 19 | 19 | **KHỚP 100% (PASS)** |
-| 2 | **Competence** | 27 | 27 | **KHỚP 100% (PASS)** |
-| 3 | **Confidentiality** | 13 | 13 | **KHỚP 100% (PASS)** |
-| 4 | **Ease of use** | 15 | 15 | **KHỚP 100% (PASS)** |
-| 5 | **Feedback** | 18 | 18 | **KHỚP 100% (PASS)** |
-| 6 | **Impunity** | 28 | 28 | **KHỚP 100% (PASS)** |
-| 7 | **Independence** | 6 | 6 | **KHỚP 100% (PASS)** |
+| 1 | **Case-focused** | 6 | 6 | **KHỚP 100% (PASS)** |
+| 2 | **Competence** | 13 | 13 | **KHỚP 100% (PASS)** |
+| 3 | **Confidentiality** | 18 | 18 | **KHỚP 100% (PASS)** |
+| 4 | **Ease of use** | 18 | 18 | **KHỚP 100% (PASS)** |
+| 5 | **Feedback** | 24 | 24 | **KHỚP 100% (PASS)** |
+| 6 | **Impunity** | 19 | 19 | **KHỚP 100% (PASS)** |
+| 7 | **Independence** | 16 | 16 | **KHỚP 100% (PASS)** |
 | 8 | **Integration** | 12 | 12 | **KHỚP 100% (PASS)** |
 | 9 | **Management support** | 18 | 18 | **KHỚP 100% (PASS)** |
 | 10 | **Shared ownership & accountability** | 9 | 9 | **KHỚP 100% (PASS)** |

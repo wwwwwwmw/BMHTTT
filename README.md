@@ -1,8 +1,8 @@
 # DT126-IRS-Repro: Tái Lập & Thực Nghiệm Hệ Thống Báo Cáo Sự Cố An Ninh Mạng (IRS) Dựa Trên Khoa Học An Toàn (Safety Science)
 
 Dự án tái lập bài báo khoa học:
-> **Designing incident reporting systems in cybersecurity**  
-> *Tobias A. Schaltegger, Benjamin Ambuehl, Melanie Knieps, Alain Mermoud, David Basin, Vincent Lenders*  
+> **Learning from safety science: designing incident reporting systems in cybersecurity**  
+> *Nico Ebert (Tác giả chính - ZHAW), Thierry Schaltegger, Benjamin Ambuehl, Tim Geppert, Ariane Trammell, Melanie Knieps, Verena Zimmermann*  
 > **Journal of Cybersecurity**, Volume 11, Issue 1, 2025, tyaf019 (Oxford University Press)  
 > DOI: [10.1093/cybsec/tyaf019](https://doi.org/10.1093/cybsec/tyaf019)
 
