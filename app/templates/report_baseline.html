@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Báo Cáo Chuẩn Hóa (Form Dài - Baseline) - Cyber-IRS{% endblock %}
+
+{% block content %}
+<div style="max-width: 850px; margin: 0 auto;">
+    <div style="margin-bottom: 1.5rem;">
+        <span class="badge" style="background-color: rgba(245, 158, 11, 0.2); color: #fbbf24; margin-bottom: 0.5rem;">
+            Baseline (High Standardization - Form Dài)
+        </span>
+        <h2>Báo Cáo Chuẩn Hóa Theo Cấu Trúc Taxonomy (Bảng 1)</h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+            Chế độ đối chứng truyền thống: Yêu cầu người báo cáo phải tự xác định thủ công toàn bộ các thực thể trong mô hình Swiss Cheese (Threat Actor, Threat Source, Event Type, Latent Factor, Adverse Impact) và nhập mô tả chi tiết.
+        </p>
+    </div>
+
+    <form action="/submit" method="POST" class="card">
+        <input type="hidden" name="submission_mode" value="baseline_long">
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label for="event_type">Cấp độ biến cố (Threat Event - Bảng 1) <span style="color: #f87171;">*</span></label>
+                <select id="event_type" name="event_type" class="form-control" required>
+                    <option value="marginal_incident">Marginal Incident (Biến cố biên / Không có tiềm năng gây hại lớn)</option>
+                    <option value="near_miss">Near Miss (Suýt xảy ra / Có tiềm năng gây hại nhưng chưa phát tác)</option>
+                    <option value="critical_incident">Critical Incident (Sự cố nghiêm trọng / Đã gây tổn thất)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="threat_actor">Tác nhân đe dọa (Threat Actor) <span style="color: #f87171;">*</span></label>
+                <select id="threat_actor" name="threat_actor" class="form-control" required>
+                    <option value="external_attacker">External Attacker (Kẻ tấn công bên ngoài)</option>
+                    <option value="accidental_insider">Accidental Insider (Nhân viên nội bộ sơ suất)</option>
+                    <option value="malicious_insider">Malicious Insider (Nội gián cố ý phá hoại)</option>
+                    <option value="unknown">Unknown (Chưa xác định)</option>
+                </select>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label for="threat_source">Nguồn mối đe dọa (Threat Source / Hazard) <span style="color: #f87171;">*</span></label>
+                <select id="threat_source" name="threat_source" class="form-control" required>
+                    <option value="phishing">Phishing Email / Social Engineering</option>
+                    <option value="misconfiguration">Lỗi cấu hình hệ thống / Đám mây (Misconfiguration)</option>
+                    <option value="credential_stuffing">Brute-force / Credential Stuffing</option>
+                    <option value="malware">Mã độc / Ransomware / Trojan</option>
+                    <option value="equipment_failure">Thiết bị hỏng hóc vật lý</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="latent_factor">Yếu tố tiềm ẩn (Latent Factor - Bảng 1) <span style="color: #f87171;">*</span></label>
+                <select id="latent_factor" name="latent_factor" class="form-control" required>
+                    <option value="vulnerability">Vulnerability (Lỗ hổng kỹ thuật phần mềm/phần cứng)</option>
+                    <option value="predisposing_condition">Predisposing Condition (Điều kiện sẵn có: hệ thống cũ, thiếu quy trình)</option>
+                </select>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label for="adverse_impact">Mức độ thiệt hại (Adverse Impact) <span style="color: #f87171;">*</span></label>
+                <select id="adverse_impact" name="adverse_impact" class="form-control" required>
+                    <option value="none">None (Chưa có thiệt hại thực tế)</option>
+                    <option value="minor">Minor (Thiệt hại nhỏ / cục bộ)</option>
+                    <option value="moderate">Moderate (Thiệt hại vừa / gián đoạn tạm thời)</option>
+                    <option value="critical">Critical (Nghiêm trọng / rò rỉ dữ liệu lớn / tê liệt)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="reporter_role">Vai trò người báo cáo (Reporter Role) <span style="color: #f87171;">*</span></label>
+                <select id="reporter_role" name="reporter_role" class="form-control" required>
+                    <option value="Internal">Nội bộ tổ chức (Internal Employee / Engineer)</option>
+                    <option value="External">Đối tác bên ngoài (External Partner / Customer)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="predisposing_condition">Mô tả điều kiện tiền ẩn / nguyên nhân gốc rễ (Predisposing Condition)</label>
+            <input type="text" id="predisposing_condition" name="predisposing_condition" class="form-control"
+                   placeholder="Ví dụ: Hạ tầng máy chủ cũ chưa vá lỗ hổng, chưa áp dụng chính sách MFA bắt buộc...">
+        </div>
+
+        <div class="form-group">
+            <label for="narrative">Nội dung chi tiết diễn biến sự cố <span style="color: #f87171;">*</span></label>
+            <textarea id="narrative" name="narrative" rows="5" class="form-control" required
+                      placeholder="Mô tả cụ thể thời gian, thiết bị, hệ thống liên quan và cách thức phát hiện..."></textarea>
+        </div>
+
+        <div class="form-group" style="display: flex; align-items: center; gap: 0.75rem;">
+            <input type="checkbox" id="is_anonymous" name="is_anonymous" value="1" checked style="width: 1.1rem; height: 1.1rem;">
+            <label for="is_anonymous" style="margin-bottom: 0; cursor: pointer;">
+                Báo cáo ở chế độ ẩn danh (Confidentiality)
+            </label>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1rem;">
+            <a href="/" class="btn btn-outline">Hủy bỏ</a>
+            <button type="submit" class="btn btn-primary" style="padding: 0.75rem 1.75rem;">
+                Gửi Báo Cáo Chuẩn Hóa
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

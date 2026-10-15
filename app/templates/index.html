@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Trang chủ - Hệ thống Cyber-IRS theo Khoa học An toàn{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 2rem; text-align: center;">
+    <h1 style="font-size: 2.2rem; background: linear-gradient(135deg, #60a5fa, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+        Hệ Thống Báo Cáo Sự Cố An Ninh Mạng (IRS)
+    </h1>
+    <p style="color: var(--text-muted); max-width: 780px; margin: 0.5rem auto 1.5rem auto; font-size: 1.05rem;">
+        Ứng dụng các nguyên lý Khoa học An toàn (Safety Science), mô hình Swiss Cheese và 14 chủ đề thiết kế từ nghiên cứu tyaf019 (Oxford University Press) để giải quyết văn hóa đổ lỗi, giảm bão báo cáo trùng lặp và kích hoạt học hỏi từ ca bệnh.
+    </p>
+    <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+        <a href="/report/variant" class="btn btn-primary" style="padding: 0.85rem 1.75rem; font-size: 1.05rem;">
+            ⚡ Báo Cáo Nhanh (Form Ngắn - Cải tiến)
+        </a>
+        <a href="/report/baseline" class="btn btn-outline" style="padding: 0.85rem 1.75rem; font-size: 1.05rem;">
+            📋 Báo Cáo Chuẩn Hóa (Form Dài - Baseline)
+        </a>
+        <a href="/feedback" class="btn btn-outline" style="padding: 0.85rem 1.75rem; font-size: 1.05rem;">
+            🔍 Tra cứu Phản hồi Ẩn danh
+        </a>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
+    <div class="card" style="margin-bottom: 0;">
+        <div style="color: #60a5fa; font-size: 2rem; margin-bottom: 0.5rem;">⚡</div>
+        <h3>Ease of Use & Gợi ý AI</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+            Form ngắn tối ưu trải nghiệm người dùng, tự động phân tích narrative để gán nhãn Taxonomy Table 1 cho SOC mà không gây quá tải nhận thức cho người báo cáo.
+        </p>
+    </div>
+    <div class="card" style="margin-bottom: 0;">
+        <div style="color: #f59e0b; font-size: 2rem; margin-bottom: 0.5rem;">🔗</div>
+        <h3>Khử Trùng Lặp (De-duplication)</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+            Thuật toán lai TF-IDF + RapidFuzz so khớp văn bản với ngưỡng tương đồng để gom nhóm các báo cáo cùng vụ việc vào Master Incident, triệt tiêu Alert Fatigue.
+        </p>
+    </div>
+    <div class="card" style="margin-bottom: 0;">
+        <div style="color: #10b981; font-size: 2rem; margin-bottom: 0.5rem;">🛡️</div>
+        <h3>Bảo Mật & Xóa PII Tự Động</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+            Áp dụng nguyên tắc Data Minimization: tự động phát hiện và che giấu địa chỉ email, số điện thoại, IP trạm của người báo cáo trước khi ghi vào cơ sở dữ liệu.
+        </p>
+    </div>
+    <div class="card" style="margin-bottom: 0;">
+        <div style="color: #c084fc; font-size: 2rem; margin-bottom: 0.5rem;">🔄</div>
+        <h3>Vòng Lặp Phản Hồi (Feedback Loop)</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+            Cấp mã Tracking Token ngẫu nhiên cho phép người báo cáo theo dõi tiến độ xử lý và bài học kinh nghiệm (Case-based learning) mà hoàn toàn ẩn danh.
+        </p>
+    </div>
+</div>
+
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h2>Thống Kê Hoạt Động Hệ Thống IRS</h2>
+        <a href="/triage" class="btn btn-outline" style="font-size: 0.85rem;">Xem hàng đợi SOC &rarr;</a>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; text-align: center;">
+        <div style="background: rgba(15, 23, 42, 0.5); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border);">
+            <div style="font-size: 1.8rem; font-weight: 700; color: #38bdf8;">{{ total_count }}</div>
+            <div style="color: var(--text-muted); font-size: 0.85rem;">Tổng số báo cáo</div>
+        </div>
+        <div style="background: rgba(15, 23, 42, 0.5); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border);">
+            <div style="font-size: 1.8rem; font-weight: 700; color: #f87171;">{{ critical_count }}</div>
+            <div style="color: var(--text-muted); font-size: 0.85rem;">Sự cố nghiêm trọng</div>
+        </div>
+        <div style="background: rgba(15, 23, 42, 0.5); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border);">
+            <div style="font-size: 1.8rem; font-weight: 700; color: #fbbf24;">{{ near_miss_count }}</div>
+            <div style="color: var(--text-muted); font-size: 0.85rem;">Near Miss (Suýt xảy ra)</div>
+        </div>
+        <div style="background: rgba(15, 23, 42, 0.5); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border);">
+            <div style="font-size: 1.8rem; font-weight: 700; color: #a78bfa;">{{ duplicate_count }}</div>
+            <div style="color: var(--text-muted); font-size: 0.85rem;">Báo cáo trùng gom nhóm</div>
+        </div>
+        <div style="background: rgba(15, 23, 42, 0.5); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border);">
+            <div style="font-size: 1.8rem; font-weight: 700; color: #34d399;">{{ masked_pii_count }}</div>
+            <div style="color: var(--text-muted); font-size: 0.85rem;">Thông tin PII được che</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

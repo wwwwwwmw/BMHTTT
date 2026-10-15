@@ -1,0 +1,39 @@
+# DATASET MANIFEST & INTEGRITY SPECIFICATION
+# Project: DT126-IRS-Repro (Incident Reporting System based on Safety Science)
+# Reference: DOI 10.1093/cybsec/tyaf019
+# Version: 1.0.0
+# Generator Seed: 42
+# Creation Date: 2026-10-15
+
+[SHA256 Checksums]
+e5a852a0bd42729516955241757f1d8da4c903f5c763f5eaec27a79751ba6174  data/raw_synthetic_cases.json
+8419ca6845b81787308a53bb5f6311fa8a94bf0c7f7f86410d1b6fca46127fdd  data/train_cases.csv
+2f6fc05a625bee41c656c06476072a840eb457edb28d6f27c4a16c2a83ba6d16  data/test_cases.csv
+
+[Dataset Summary & Statistics]
+Total Incident Records: 400
+Total Unique Clusters: 186
+Duplicate Ground Truth Records: 214 (53.50%)
+Train Records: 262 (130 clusters)
+Test Records: 138 (56 clusters)
+Cluster Overlap Between Train and Test: 0 (Strict Cluster Split - Zero Data Leakage)
+
+[Class Distribution (Table 1 Taxonomy)]
+- Marginal Incident: 157 (39.25%)
+- Near Miss: 147 (36.75%)
+- Critical Incident: 96 (24.00%)
+
+[Latent Factors Distribution]
+- Vulnerability: 232
+- Predisposing Condition: 168
+
+[Threat Actors Distribution]
+{
+  "external_attacker": 210,
+  "accidental_insider": 136,
+  "unknown": 54
+}
+
+[Trust Boundary & Data Minimization]
+Trust Boundary: Reporter -> Web Form -> PII Masking Filter -> SQLite DB -> SOC Triage Queue.
+PII Injected Records: 263 records containing raw emails, phone numbers, or IPv4 addresses for privacy leakage testing.

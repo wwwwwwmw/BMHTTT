@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Tra Cứu Phản Hồi Ẩn Danh - Cyber-IRS{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+    <div style="margin-bottom: 1.5rem; text-align: center;">
+        <h2>Tra Cứu Phản Hồi & Bài Học Kinh Nghiệm</h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+            Hiện thực hóa nguyên tắc <strong>Feedback + Case-based Learning + Confidentiality</strong>: Nhập mã Tracking Token để xem phân tích của chuyên gia an ninh mà không cần để lộ danh tính.
+        </p>
+    </div>
+
+    <div class="card" style="margin-bottom: 2rem;">
+        <form action="/feedback" method="GET" style="display: flex; gap: 0.75rem;">
+            <input type="text" name="token" value="{{ token or '' }}" class="form-control" required
+                   placeholder="Nhập mã Tracking Token (Ví dụ: IRS-A1B2C3D4E5F6)..."
+                   style="font-family: monospace; font-size: 1.05rem;">
+            <button type="submit" class="btn btn-primary" style="white-space: nowrap; padding: 0.75rem 1.5rem;">
+                🔍 Tra Cứu
+            </button>
+        </form>
+    </div>
+
+    {% if error %}
+        <div class="card" style="border-color: rgba(239, 68, 68, 0.5); background-color: rgba(239, 68, 68, 0.08); text-align: center;">
+            <p style="color: #f87171; font-weight: 600;">⚠️ {{ error }}</p>
+        </div>
+    {% endif %}
+
+    {% if incident %}
+        <div class="card" style="border-color: rgba(59, 130, 246, 0.4);">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding-bottom: 1rem; margin-bottom: 1.25rem;">
+                <div>
+                    <span style="font-size: 0.85rem; color: var(--text-muted);">Mã Báo Cáo Sự Cố:</span>
+                    <h3 style="margin-bottom: 0; color: #38bdf8;">{{ incident.incident_code }}</h3>
+                </div>
+                <div style="text-align: right;">
+                    <span class="badge badge-{{ incident.status|lower }}" style="font-size: 0.85rem; padding: 0.35rem 0.8rem;">
+                        {{ incident.status }}
+                    </span>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">
+                        Ưu tiên: <strong style="color: var(--text-main);">{{ incident.triage_priority }}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; background: rgba(15, 23, 42, 0.6); padding: 1rem; border-radius: 8px;">
+                <div>
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">Cấp độ sự kiện (Table 1):</span><br>
+                    <span class="badge badge-{{ incident.event_type }}">{{ incident.event_type }}</span>
+                </div>
+                <div>
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">Nguồn đe dọa (Threat Source):</span><br>
+                    <strong>{{ incident.threat_source }}</strong>
+                </div>
+                <div>
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">Yếu tố tiềm ẩn (Latent Factor):</span><br>
+                    <strong>{{ incident.latent_factor }}</strong>
+                </div>
+                <div>
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">Thời gian gửi:</span><br>
+                    <span>{{ incident.created_at }}</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label style="color: var(--text-muted);">Nội dung bạn đã báo cáo (Đã áp dụng Data Minimization):</label>
+                <div style="background: rgba(15, 23, 42, 0.4); padding: 0.85rem 1rem; border-radius: 6px; border: 1px solid var(--card-border); color: #cbd5e1; font-size: 0.95rem;">
+                    {{ incident.sanitized_narrative }}
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem; background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; padding: 1.25rem;">
+                <h4 style="color: #60a5fa; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                    <span>📢</span> Phản Hồi Từ Đội Ngũ An Ninh SOC:
+                </h4>
+                <p style="font-size: 0.95rem; color: var(--text-main); line-height: 1.6;">
+                    {% if incident.triage_notes %}
+                        {{ incident.triage_notes }}
+                    {% else %}
+                        <em>Đội ngũ SOC đang tiếp nhận và phân tích sự cố. Thông tin cập nhật sẽ xuất hiện tại đây ngay khi có kết quả điều tra.</em>
+                    {% endif %}
+                </p>
+            </div>
+
+            <div style="margin-top: 1rem; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 1.25rem;">
+                <h4 style="color: #34d399; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                    <span>💡</span> Bài Học Kinh Nghiệm Tổ Chức (Case-based Learning):
+                </h4>
+                <p style="font-size: 0.95rem; color: var(--text-main); line-height: 1.6;">
+                    {% if incident.case_learning_summary %}
+                        {{ incident.case_learning_summary }}
+                    {% else %}
+                        <em>Chuyên viên an ninh sẽ tổng hợp bài học an toàn tổ chức và các khuyến nghị cải tiến lát cắt phòng vệ (Defenses-in-depth) sau khi đóng sự cố.</em>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

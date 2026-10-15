@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Báo Cáo Nhanh (Form Ngắn - Cải Tiến) - Cyber-IRS{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+    <div style="margin-bottom: 1.5rem;">
+        <span class="badge" style="background-color: rgba(96, 165, 250, 0.2); color: #60a5fa; margin-bottom: 0.5rem;">
+            Biến Thể Cải Tiến (Ease of Use + Pragmatic Standardization)
+        </span>
+        <h2>Báo Cáo Sự Cố Nhanh (Form Ngắn)</h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+            Bạn chỉ cần mô tả sự việc và chọn mức độ khẩn cấp. Hệ thống sẽ tự động gán nhãn phân loại (Taxonomy), lọc thông tin nhạy cảm và kiểm tra trùng lặp để gửi cho đội ngũ SOC.
+        </p>
+    </div>
+
+    <form action="/submit" method="POST" class="card">
+        <input type="hidden" name="submission_mode" value="variant_short">
+
+        <div class="form-group">
+            <label for="narrative">
+                Mô tả chi tiết sự việc hoặc bất thường bạn phát hiện <span style="color: #f87171;">*</span>
+            </label>
+            <textarea id="narrative" name="narrative" rows="5" class="form-control" required
+                      placeholder="Ví dụ: Tôi phát hiện kho lưu trữ đám mây S3 tên corp-data đang để quyền công khai trên mạng, may mắn là chưa ai tải xuống..."></textarea>
+            <div style="display: flex; justify-content: space-between; margin-top: 0.4rem; font-size: 0.8rem; color: var(--text-muted);">
+                <span>Hệ thống tự động che email, số điện thoại, IP cá nhân khi lưu trữ.</span>
+                <span id="char-count">0 ký tự</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Mức độ khẩn cấp cảm nhận được:</label>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal; cursor: pointer; background: rgba(15, 23, 42, 0.5); padding: 0.6rem 1rem; border-radius: 6px; border: 1px solid var(--card-border);">
+                    <input type="radio" name="quick_severity" value="normal" checked>
+                    <span>Bình thường (Marginal / Thăm dò)</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal; cursor: pointer; background: rgba(15, 23, 42, 0.5); padding: 0.6rem 1rem; border-radius: 6px; border: 1px solid var(--card-border);">
+                    <input type="radio" name="quick_severity" value="near_miss">
+                    <span style="color: #fbbf24;">Suýt xảy ra hậu quả (Near Miss)</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal; cursor: pointer; background: rgba(15, 23, 42, 0.5); padding: 0.6rem 1rem; border-radius: 6px; border: 1px solid var(--card-border);">
+                    <input type="radio" name="quick_severity" value="critical">
+                    <span style="color: #f87171;">Khẩn cấp / Đã tổn hại (Critical)</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group" style="display: flex; align-items: center; gap: 0.75rem; background: rgba(16, 185, 129, 0.08); padding: 0.85rem 1rem; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.2);">
+            <input type="checkbox" id="is_anonymous" name="is_anonymous" value="1" checked style="width: 1.1rem; height: 1.1rem;">
+            <label for="is_anonymous" style="margin-bottom: 0; cursor: pointer;">
+                <strong>Báo cáo ẩn danh (Confidentiality & Impunity):</strong> Không lưu vết danh tính người gửi. Bạn sẽ được cấp một <em>Mã Tracking Token</em> duy nhất để theo dõi kết quả.
+            </label>
+        </div>
+
+        <div style="background: rgba(30, 41, 59, 0.6); border: 1px dashed var(--card-border); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #94a3b8; margin-bottom: 0.4rem;">
+                🤖 KHẢ NĂNG TỰ ĐỘNG HÓA CỦA FORM CẢI TIẾN:
+            </div>
+            <ul style="font-size: 0.85rem; color: #cbd5e1; margin-left: 1.25rem;">
+                <li>Tự động ánh xạ nội dung sang <strong>Taxonomy Bảng 1</strong> (Threat Actor, Source, Event Type, Latent Factor).</li>
+                <li>Áp dụng bộ lọc <strong>Data Minimization</strong>: Tự động che email, số điện thoại, IP trạm cá nhân.</li>
+                <li>Chạy thuật toán <strong>De-duplication (TF-IDF + RapidFuzz)</strong> để gom nhóm vào Master Incident nếu trùng lặp.</li>
+            </ul>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 1rem;">
+            <a href="/" class="btn btn-outline">Hủy bỏ</a>
+            <button type="submit" class="btn btn-primary" style="padding: 0.75rem 1.75rem;">
+                🚀 Gửi Báo Cáo Sự Cố
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    const narrativeInput = document.getElementById('narrative');
+    const charCount = document.getElementById('char-count');
+    narrativeInput.addEventListener('input', () => {
+        charCount.innerText = `${narrativeInput.value.length} ký tự`;
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,4 @@
+﻿seed,precision,recall,f1_score,baseline_completion_rate,variant_completion_rate,baseline_submission_time_s,variant_submission_time_s,triage_time_without_dedup_hours,triage_time_with_dedup_hours,triage_reduction_pct,pii_masking_rate
+42,0.6321,0.8171,0.7128,71.01,94.2,176.2,48.16,6.9,2.48,64.01,65.26
+100,0.6321,0.8171,0.7128,70.29,92.03,175.31,48.22,6.9,2.48,64.01,65.26
+2026,0.6321,0.8171,0.7128,70.29,94.2,175.59,48.0,6.9,2.48,64.01,65.26

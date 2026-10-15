@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Xác Nhận Tiếp Nhận Báo Cáo - Cyber-IRS{% endblock %}
+
+{% block content %}
+<div style="max-width: 750px; margin: 0 auto;">
+    <div class="card" style="text-align: center; padding: 2.5rem 2rem; border-color: rgba(16, 185, 129, 0.4);">
+        <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">🎉</div>
+        <h2 style="color: #34d399; margin-bottom: 0.5rem;">Báo Cáo Sự Cố Đã Được Tiếp Nhận Thành Công!</h2>
+        <p style="color: var(--text-muted); font-size: 1rem; margin-bottom: 1.5rem;">
+            Cảm ơn bạn đã chủ động đóng góp xây dựng văn hóa an toàn an ninh mạng theo mô hình Just Culture (Không trừng phạt).
+        </p>
+
+        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--card-border); border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; text-align: left;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.75rem;">
+                <span style="color: var(--text-muted); font-size: 0.9rem;">Mã sự cố hệ thống:</span>
+                <strong style="color: var(--text-main); font-size: 1.1rem;">{{ incident.incident_code }}</strong>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <span style="color: #f59e0b; font-size: 0.85rem; font-weight: 700; text-transform: uppercase;">
+                    🔑 MÃ TRA CỨU PHẢN HỒI ẨN DANH (TRACKING TOKEN):
+                </span>
+                <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                    <input type="text" id="token-input" value="{{ incident.tracking_token }}" readonly class="form-control"
+                           style="font-family: monospace; font-size: 1.15rem; font-weight: 700; color: #38bdf8; text-align: center; letter-spacing: 1px;">
+                    <button onclick="copyToken()" class="btn btn-outline" style="white-space: nowrap;">📋 Sao chép</button>
+                </div>
+                <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.4rem;">
+                    * Lưu lại mã này để kiểm tra kết quả phân loại, khuyến nghị và bài học kinh nghiệm từ đội SOC mà không cần đăng nhập.
+                </p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; font-size: 0.9rem; padding-top: 0.75rem; border-top: 1px solid var(--card-border);">
+                <div>
+                    <span style="color: var(--text-muted);">Phân loại (Event Type):</span><br>
+                    <span class="badge badge-{{ incident.event_type }}">{{ incident.event_type }}</span>
+                </div>
+                <div>
+                    <span style="color: var(--text-muted);">Trạng thái xử lý:</span><br>
+                    <span class="badge badge-low">{{ incident.status }}</span>
+                </div>
+                <div>
+                    <span style="color: var(--text-muted);">Khử trùng lặp (De-duplication):</span><br>
+                    {% if incident.is_duplicate %}
+                        <span style="color: #fbbf24; font-weight: 600;">⚠️ Gom vào Master #{{ incident.master_incident_id }} (Độ khớp: {{ (incident.similarity_score * 100)|round(1) }}%)</span>
+                    {% else %}
+                        <span style="color: #34d399; font-weight: 600;">✅ Báo cáo độc lập (Master)</span>
+                    {% endif %}
+                </div>
+                <div>
+                    <span style="color: var(--text-muted);">Bảo vệ danh tính (Data Minimization):</span><br>
+                    {% if incident.pii_masked_count > 0 %}
+                        <span style="color: #60a5fa; font-weight: 600;">🛡️ Đã che {{ incident.pii_masked_count }} thông tin nhạy cảm (PII)</span>
+                    {% else %}
+                        <span style="color: #94a3b8;">Không phát hiện PII nhạy cảm</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--card-border);">
+                <span style="color: var(--text-muted); font-size: 0.85rem;">Nội dung tiếp nhận (Đã che PII):</span>
+                <div style="background: rgba(15, 23, 42, 0.5); padding: 0.65rem 0.85rem; border-radius: 6px; border: 1px solid var(--card-border); color: #cbd5e1; font-size: 0.9rem; margin-top: 0.35rem;">
+                    {{ incident.sanitized_narrative }}
+                </div>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: center; gap: 1rem;">
+            <a href="/feedback?token={{ incident.tracking_token }}" class="btn btn-primary">
+                🔍 Theo Dõi Phản Hồi Ngay
+            </a>
+            <a href="/" class="btn btn-outline">
+                Trang Chủ
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function copyToken() {
+        const tokenInput = document.getElementById('token-input');
+        tokenInput.select();
+        tokenInput.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(tokenInput.value);
+        alert('Đã sao chép mã Tracking Token vào bộ nhớ tạm: ' + tokenInput.value);
+    }
+</script>
+{% endblock %}

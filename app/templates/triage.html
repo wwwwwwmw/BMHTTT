@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Hàng Đợi Phân Loại SOC (Triage Queue) - Cyber-IRS{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+        <h2>Hàng Đợi Phân Loại & Điều Tra SOC (Triage Queue)</h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+            Ưu tiên xử lý <strong>Critical Incident</strong> & <strong>Near Miss</strong>. Báo cáo trùng được gom cụm tự động bằng module De-duplication.
+        </p>
+    </div>
+    <div style="display: flex; gap: 0.5rem;">
+        <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #f87171;">Critical: {{ critical_count }}</span>
+        <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;">Near Miss: {{ near_miss_count }}</span>
+        <span class="badge" style="background: rgba(168, 85, 247, 0.2); color: #c084fc;">Đã Gom Trùng: {{ duplicate_count }}</span>
+    </div>
+</div>
+
+<div class="card" style="padding: 1rem; overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+        <thead>
+            <tr style="border-bottom: 2px solid var(--card-border); color: var(--text-muted);">
+                <th style="padding: 0.75rem 0.5rem;">Mã / Ngày</th>
+                <th style="padding: 0.75rem 0.5rem;">Cấp Độ (Table 1)</th>
+                <th style="padding: 0.75rem 0.5rem;">Nội Dung (Đã Che PII)</th>
+                <th style="padding: 0.75rem 0.5rem;">Gom Cụm Trùng</th>
+                <th style="padding: 0.75rem 0.5rem;">Ưu Tiên</th>
+                <th style="padding: 0.75rem 0.5rem;">Trạng Thái</th>
+                <th style="padding: 0.75rem 0.5rem;">Thao Tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inc in incidents %}
+            <tr style="border-bottom: 1px solid var(--card-border); {% if inc.event_type == 'critical_incident' %}background: rgba(239, 68, 68, 0.05);{% elif inc.event_type == 'near_miss' %}background: rgba(245, 158, 11, 0.04);{% endif %}">
+                <td style="padding: 0.75rem 0.5rem; white-space: nowrap;">
+                    <strong style="color: #38bdf8;">{{ inc.incident_code }}</strong><br>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">{{ inc.created_at[:16] }}</span>
+                </td>
+                <td style="padding: 0.75rem 0.5rem; white-space: nowrap;">
+                    <span class="badge badge-{{ inc.event_type }}">{{ inc.event_type }}</span><br>
+                    <span style="font-size: 0.75rem; color: #94a3b8;">{{ inc.latent_factor }}</span>
+                </td>
+                <td style="padding: 0.75rem 0.5rem; max-width: 380px;">
+                    <div style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                        {{ inc.sanitized_narrative }}
+                    </div>
+                    {% if inc.pii_masked_count > 0 %}
+                        <span style="font-size: 0.7rem; color: #60a5fa;">🛡️ Đã che {{ inc.pii_masked_count }} PII</span>
+                    {% endif %}
+                </td>
+                <td style="padding: 0.75rem 0.5rem; white-space: nowrap;">
+                    {% if inc.is_duplicate %}
+                        <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;">
+                            Trùng #{{ inc.master_incident_id }}
+                        </span><br>
+                        <span style="font-size: 0.75rem; color: #94a3b8;">Khớp: {{ (inc.similarity_score * 100)|round(0) }}%</span>
+                    {% else %}
+                        <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">
+                            Master Incident
+                        </span>
+                    {% endif %}
+                </td>
+                <td style="padding: 0.75rem 0.5rem; white-space: nowrap;">
+                    <span class="badge badge-{{ inc.triage_priority|lower }}">{{ inc.triage_priority }}</span>
+                </td>
+                <td style="padding: 0.75rem 0.5rem; white-space: nowrap;">
+                    <span class="badge" style="background: rgba(255,255,255,0.1); color: var(--text-main);">
+                        {{ inc.status }}
+                    </span>
+                </td>
+                <td style="padding: 0.75rem 0.5rem; white-space: nowrap;">
+                    <button onclick="openTriageModal({{ inc.id }}, '{{ inc.incident_code }}', '{{ inc.status }}', '{{ inc.triage_priority }}', '{{ inc.triage_notes|default('', true)|replace('\n', ' ')|replace('\'', '\\\'') }}', '{{ inc.case_learning_summary|default('', true)|replace('\n', ' ')|replace('\'', '\\\'') }}')"
+                            class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+                        ✏️ Xử lý
+                    </button>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                    Chưa có báo cáo nào trong hàng đợi.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal cập nhật Triage -->
+<div id="triage-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 100; align-items: center; justify-content: center; padding: 1.5rem;">
+    <div class="card" style="max-width: 650px; width: 100%; border-color: var(--primary);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.75rem;">
+            <h3 style="margin-bottom: 0;">Cập Nhật Phân Loại & Phản Hồi: <span id="modal-code" style="color: #38bdf8;"></span></h3>
+            <button onclick="closeTriageModal()" style="background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer;">&times;</button>
+        </div>
+
+        <form id="triage-form" method="POST">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Trạng Thái Xử Lý:</label>
+                    <select id="modal-status" name="status" class="form-control">
+                        <option value="PENDING">PENDING (Chờ tiếp nhận)</option>
+                        <option value="TRIAGED">TRIAGED (Đã phân loại)</option>
+                        <option value="INVESTIGATING">INVESTIGATING (Đang điều tra)</option>
+                        <option value="RESOLVED">RESOLVED (Đã khắc phục & đóng)</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Mức Ưu Tiên:</label>
+                    <select id="modal-priority" name="priority" class="form-control">
+                        <option value="HIGH">HIGH (Ưu tiên cao)</option>
+                        <option value="MEDIUM">MEDIUM (Trung bình)</option>
+                        <option value="LOW">LOW (Thấp)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Ghi Chú Phân Loại & Tiến Độ SOC (Feedback cho người báo cáo):</label>
+                <textarea id="modal-notes" name="triage_notes" rows="3" class="form-control"
+                          placeholder="Ví dụ: Đội SOC đã kiểm tra và đóng quyền public của bucket, cấu hình lại IAM..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Bài Học Kinh Nghiệm Tổ Chức (Case-based Learning):</label>
+                <textarea id="modal-learning" name="case_learning_summary" rows="3" class="form-control"
+                          placeholder="Ví dụ: Cần triển khai AWS Config tự động chặn bucket public, đào tạo lại DevOps..."></textarea>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1rem;">
+                <button type="button" onclick="closeTriageModal()" class="btn btn-outline">Đóng</button>
+                <button type="submit" class="btn btn-primary">Lưu Thay Đổi</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openTriageModal(id, code, status, priority, notes, learning) {
+        document.getElementById('modal-code').innerText = code;
+        document.getElementById('modal-status').value = status;
+        document.getElementById('modal-priority').value = priority;
+        document.getElementById('modal-notes').value = notes || '';
+        document.getElementById('modal-learning').value = learning || '';
+        document.getElementById('triage-form').action = `/triage/update/${id}`;
+        document.getElementById('triage-modal').style.display = 'flex';
+    }
+
+    function closeTriageModal() {
+        document.getElementById('triage-modal').style.display = 'none';
+    }
+</script>
+{% endblock %}
