@@ -85,3 +85,4 @@ Truy cập trình duyệt tại: `http://127.0.0.1:5000`
 - **Tra cứu Phản hồi Ẩn danh (Tracking Token):** `http://127.0.0.1:5000/feedback`
 - **Hàng đợi Phân loại SOC (Triage Queue):** `http://127.0.0.1:5000/triage`
 - **API Thống kê Metrics:** `http://127.0.0.1:5000/api/metrics`
+# BMHTTT
